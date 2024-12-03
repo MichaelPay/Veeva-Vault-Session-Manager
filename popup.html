@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    /* Apply White as the main background color */
+    body {
+      background-color: #ffffff; /* White */
+      font-family: Arial, sans-serif;
+      color: #1b2f54; /* Midnight Indigo */
+      margin: 0;
+      padding: 20px;
+      overflow-x: hidden; /* Prevent horizontal scrollbar */
+      min-width: 300px; /* Ensure minimum width */
+    }
+
+    /* Style labels and inputs */
+    label {
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    select, button {
+      padding: 10px;
+      margin-top: 5px;
+      margin-bottom: 10px;
+      border: none;
+      border-radius: 4px;
+    }
+
+    select {
+      background-color: #ffffff;
+      color: #1b2f54; /* Midnight Indigo */
+      border: 1px solid #bbbbbc; /* Veeva Light Gray */
+      flex-grow: 1;
+    }
+
+    button {
+      background-color: #f7981d; /* Veeva Orange */
+      color: #ffffff;
+      cursor: pointer;
+      margin-left: 5px;
+    }
+
+    button:hover {
+      background-color: #db6015; /* Sunset Red */
+    }
+
+    .outline-button {
+      background-color: #ffffff;
+      color: #f7981d; /* Veeva Orange */
+      border: 2px solid #f7981d; /* Veeva Orange */
+      cursor: pointer;
+      width: 100%;
+      padding: 10px;
+      border-radius: 4px;
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    .outline-button:hover {
+      background-color: #f7981d; /* Veeva Orange */
+      color: #ffffff;
+    }
+
+    /* Style the text fields */
+    .text-field-container {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .text-field {
+      flex-grow: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      border: 1px solid #bbbbbc; /* Veeva Light Gray */
+      padding: 10px;
+      border-radius: 4px;
+      background-color: #ffffff;
+      color: #1b2f54; /* Midnight Indigo */
+    }
+
+    .copy-icon {
+      margin-left: 10px;
+      padding: 5px;
+      width: 30px;
+      height: 30px;
+      border: none;
+      border-radius: 4px;
+      background-color: #f7981d; /* Veeva Orange */
+      color: #ffffff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .copy-icon:hover {
+      background-color: #db6015; /* Sunset Red */
+    }
+
+    /* Basic styling for the popup */
+    .snackbar {
+      visibility: hidden; /* Ensure snackbar is hidden initially */
+      min-width: 250px;
+      background-color: #4CAF50;
+      color: white;
+      text-align: center;
+      border-radius: 2px;
+      padding: 16px;
+      position: fixed; /* Changed from absolute to fixed */
+      z-index: 1;
+      right: 20px; /* Position at the right corner */
+      bottom: 20px; /* Position at the bottom with spacing */
+      font-size: 17px;
+    }
+
+    .snackbar.show {
+      visibility: visible;
+      -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+      animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    }
+
+    @-webkit-keyframes fadein {
+      from {opacity: 0;}
+      to {opacity: 1;}
+    }
+
+    @keyframes fadein {
+      from {opacity: 0;}
+      to {opacity: 1;}
+    }
+
+    @-webkit-keyframes fadeout {
+      from {opacity: 1;}
+      to {opacity: 0;}
+    }
+
+    @keyframes fadeout {
+      from {opacity: 1;}
+      to {opacity: 0;}
+    }
+
+    .button-row {
+      display: flex;
+      align-items: center;
+    }
+
+    .button-row button {
+      width: auto;
+      white-space: nowrap;
+    }
+
+    .field-header {
+      margin-top: 20px;
+      margin-bottom: 5px; /* Add spacing after the header */
+    }
+
+    .open-icon {
+      /* Same styling as .copy-icon */
+      margin-left: 10px;
+      padding: 5px;
+      width: 30px;
+      height: 30px;
+      border: none;
+      border-radius: 4px;
+      background-color: #f7981d; /* Veeva Orange */
+      color: #ffffff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .open-icon:hover {
+      background-color: #db6015; /* Sunset Red */
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+  <label for="cookieSelect">Select a Session:</label>
+  <div class="button-row">
+    <select id="cookieSelect"></select>
+    <button id="refreshButton">Refresh</button>
+    <button id="deleteButton">Delete Session</button>
+  </div>
+
+  <div id="details" style="display:none;">
+    <p class="field-header"><strong>URL:</strong></p>
+    <div class="text-field-container">
+      <span id="url" class="text-field"></span>
+      <button id="copyUrl" class="copy-icon"><i class="fas fa-copy"></i></button>
+      <button id="openUrl" class="open-icon"><i class="fas fa-external-link-alt"></i></button>
+    </div>
+
+    <p class="field-header"><strong>Instance ID:</strong></p>
+    <div class="text-field-container">
+      <span id="instanceId" class="text-field"></span>
+      <button id="copyInstanceId" class="copy-icon"><i class="fas fa-copy"></i></button>
+    </div>
+    
+    <p class="field-header"><strong>Session ID (TK):</strong></p>
+    <div class="text-field-container">
+      <span id="sessionId" class="text-field"></span>
+      <button id="copySessionId" class="copy-icon"><i class="fas fa-copy"></i></button>
+    </div>
+  </div>
+
+  <div id="userDetails" style="display:none;">
+    <p class="field-header"><strong>User Name:</strong></p>
+    <div class="text-field-container">
+      <span id="userName" class="text-field"></span>
+      <button id="copyUserName" class="copy-icon"><i class="fas fa-copy"></i></button>
+    </div>
+
+    <p class="field-header"><strong>User ID:</strong></p>
+    <div class="text-field-container">
+      <span id="userId" class="text-field"></span>
+      <button id="copyUserId" class="copy-icon"><i class="fas fa-copy"></i></button>
+    </div>
+  </div>
+
+  <div id="message" style="display:none; color: red; margin-top: 10px;">No Veeva Vault Sessions found</div>
+
+  <div id="snackbar">Copied to Clipboard!</div>
+
+  <button id="loginButton" class="outline-button" style="display:none;" onclick="window.open('https://login.veevavault.com', '_blank')">Login to Veeva Vault</button>
+
+  <script src="popup.js"></script>
+</body>
+</html>
